@@ -117,6 +117,19 @@ class VectorStore:
         buf.sort(reverse=True)
         return buf
 
+    def get_sorted_from_page(self, query):
+        buf = []
+        target = None
+        for body, (v, title) in tqdm(self.cache.items()):
+            if title == query:
+                target = np.array(v)
+                break
+        for body, (v, title) in tqdm(self.cache.items()):
+            buf.append((target.dot(v), body, title))
+        buf.sort(reverse=True)
+        return buf
+
+
     def save(self):
         pickle.dump(self.cache, open(self.name, "wb"))
 
